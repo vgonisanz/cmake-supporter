@@ -1,0 +1,119 @@
+# TOP Level Configuration
+# ------------------------------------------------------------------------------------------------------
+if(CMAKE_GENERATOR MATCHES Xcode AND XCODE_VERSION VERSION_GREATER 4.3)
+  cmake_minimum_required(VERSION 2.8.8)
+elseif(IOS)
+  cmake_minimum_required(VERSION 2.8.0)
+else()
+  cmake_minimum_required(VERSION 2.6.3)
+endif()
+
+# Main header: Project name & Configuration
+# ------------------------------------------------------------------------------------------------------
+SET(PROJ_MAIN_NAME "AURA")
+PROJECT(${PROJ_MAIN_NAME})
+
+# Include Cmake helpers
+# ------------------------------------------------------------------------------------------------------
+INCLUDE( cmake_tools/scripts/OpenCVUtils.cmake)			# Add OpenCVUtils macros
+INCLUDE( cmake_tools/scripts/OpenCVDetectCXXCompiler.cmake)	# Detect compiler and target platform architecture
+INCLUDE( cmake_tools/scripts/helperCrosscompile.cmake)		# Helper to crosscompiling and paths
+INCLUDE( cmake_tools/scripts/helperFlagsPlatforms.cmake)	# Helper to configure flags for everyplatform
+INCLUDE( cmake_tools/scripts/macroProjectInfo.cmake)		# Macro to print basic info
+INCLUDE( cmake_tools/scripts/macroProjectAdvancedInfo.cmake)	# Macro to print MAIN info
+
+# Configuration types
+SET(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)
+IF(DEFINED CMAKE_BUILD_TYPE AND CMAKE_VERSION VERSION_GREATER "2.8")
+  SET_PROPERTY(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${CMAKE_CONFIGURATION_TYPES})
+ENDIF()
+
+# Configure variables
+# ------------------------------------------------------------------------------------------------------
+
+# Paths
+SET(${PROJ_MAIN_NAME}_PATH_MAIN 	${CMAKE_SOURCE_DIR} 					CACHE PATH "This directory contains initial Path")
+SET(${PROJ_MAIN_NAME}_PATH_LIBS 	${PROJECT_BINARY_DIR}/gen				CACHE PATH "This directory contains all libs")
+SET(${PROJ_MAIN_NAME}_PATH_EXE 		${PROJECT_BINARY_DIR}/gen				CACHE PATH "This directory contains executables")
+SET(${PROJ_MAIN_NAME}_PATH_3RDPARTY 	${CMAKE_SOURCE_DIR}/3rdParty 				CACHE PATH "This directory contains 3rdparty libraries")
+SET(${PROJ_MAIN_NAME}_PATH_DATA 	${${PROJ_MAIN_NAME}_PATH_MAIN}/extras/data/ 		CACHE PATH "This directory contains all DATA and RESOURCES")
+SET(${PROJ_MAIN_NAME}_PATH_INSTALL 	${PROJECT_BINARY_DIR}/prebuilt/${PROJ_MAIN_NAME} 	CACHE PATH "This directory to install prebuilt")
+
+# Build type
+IF(TARGET_PLATFORM STREQUAL TARGET_ANDROID)
+  SET(${PROJ_MAIN_NAME}_LIB_TYPE "STATIC" CACHE STRING "Choose STATIC or SHARED to generate libraries" FORCE)
+ELSEIF(TARGET_PLATFORM STREQUAL TARGET_WIN32)
+  SET(${PROJ_MAIN_NAME}_LIB_TYPE "SHARED" CACHE STRING "Choose STATIC or SHARED to generate libraries" FORCE)  
+ELSEIF(TARGET_PLATFORM STREQUAL TARGET_LINUX)
+  SET(${PROJ_MAIN_NAME}_LIB_TYPE "SHARED" CACHE STRING "Choose STATIC or SHARED to generate libraries" FORCE)
+ELSEIF(TARGET_PLATFORM STREQUAL TARGET_MAC)
+  SET(${PROJ_MAIN_NAME}_LIB_TYPE "SHARED" CACHE STRING "Choose STATIC or SHARED to generate libraries" FORCE)
+ELSEIF(TARGET_PLATFORM STREQUAL TARGET_IOS)
+  SET(${PROJ_MAIN_NAME}_LIB_TYPE "STATIC" CACHE STRING "Choose STATIC or SHARED to generate libraries" FORCE)
+ELSE()
+   MESSAGE(FATAL_ERROR "ERROR ${PROJ_MAIN_NAME}_LIB_TYPE")
+ENDIF()
+
+# Configure options
+# ------------------------------------------------------------------------------------------------------
+OCV_OPTION(${PROJ_MAIN_NAME}_BUILD_SAMPLES       "Build samples"            					OFF )
+OCV_OPTION(${PROJ_MAIN_NAME}_BUILD_PROFILE       "Add flags to profiling UNIX" 					OFF )
+OCV_OPTION(${PROJ_MAIN_NAME}_BUILD_CPP11         "Force compile with standard C++11" 				ON )
+
+# Uncatego
+OCV_OPTION(CMAKE_VERBOSE "Verbose mode" OFF )
+
+# Configuration per platform
+# ------------------------------------------------------------------------------------------------------
+include( cmake_tools/scripts/helperFlagsPlatforms.cmake)
+
+# Configuration current project
+# ------------------------------------------------------------------------------------------------------
+SET(CMAKE_DEBUG_POSTFIX)
+
+# Dependencies
+# ------------------------------------------------------------------------------------------------------
+FIND_PACKAGE( XXX )  
+IF(OpenCV_DIR STREQUAL NOT_FOUND)
+  MESSAGE(FATAL_ERROR "Install XXX")
+ENDIF()
+
+# Project Logic
+# ------------------------------------------------------------------------------------------------------
+IF(NOT TARGET_PLATFORM STREQUAL TARGET_NONE)
+  ######################################################################################
+  # Logic configuration
+  ######################################################################################
+  CHECK_FOR_CXX11_COMPILER(${PROJ_MAIN_NAME}_BUILD_CPP11)	
+  IF(${PROJ_MAIN_NAME}_BUILD_CPP11)
+    ENABLE_CXX11()	# If a C++11 compiler is available, then set the appropriate flags
+  ELSE()
+    MESSAGE("Your C++ compiler may does not support C++11.")
+  ENDIF()
+  
+  ######################################################################################
+  # Print info
+  ######################################################################################
+  PRINTADVANCEDINFO(${PROJ_MAIN_NAME})
+  
+  # 3rdParty
+  status("  3rdParty info" )
+  status("  ----------------------------------------")
+  #IF(${PROJ_NAME}_3rdparty)
+  #status("  ${PROJ_NAME}_3rdparty"  )
+  #
+  status("")
+  
+  ######################################################################################
+  # ADD SUB PROJECTS
+  ######################################################################################
+  ADD_SUBDIRECTORY(3rdParty)
+  ADD_SUBDIRECTORY(modules)
+  
+  IF(${PROJ_MAIN_NAME}_BUILD_SAMPLES)
+    ADD_SUBDIRECTORY(samples)
+  ENDIF()
+  
+ELSE()
+  message(FATAL_ERROR " TARGET no autodetected. Please, select a TARGET manually. ")
+ENDIF()
