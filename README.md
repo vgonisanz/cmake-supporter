@@ -12,8 +12,11 @@ An example of usage in a real project is available at GUCpp repository, go to
 
 ## Quick start
 
-- If Var CMAKE_SOURCE_DIR is the root path of the repository, copy or add as submodule this repository at path
-```${CMAKE_SOURCE_DIR}/cmake/Modules/```
+- If Var CMAKE_SOURCE_DIR is the root path of the repository, copy or add as submodule this repository at path:
+
+```cmake
+${CMAKE_SOURCE_DIR}/cmake/Modules/
+```
 
 - To use C/Cpp macros, add on your CMakeLists.txt at the beggining as follow:
 
