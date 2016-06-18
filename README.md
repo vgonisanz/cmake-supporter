@@ -1,4 +1,4 @@
-# CMake-supporter
+# CMake Supporter
 
 ## TODO
 
@@ -36,3 +36,13 @@ INCLUDE( cms )
 - If you work with many platforms (x86, arm, android...) separate
 each one in a folder inside build folder
 - More info in Templates
+
+## Contribution guidelines
+-
+
+Please check the [contrubution guidelines](https://github.com/vgonisanz/cmake-supporter/blob/master/CONTRIBUTING.md).
+
+##### Authors
+
+* [vgonisanz](https://github.com/vgonisanz) (Main Author)
+* [RDCH106](https://github.com/RDCH106)
