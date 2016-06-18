@@ -1,9 +1,9 @@
 # CMake Supporter
 
-## TODO
+## Authors
 
-- Improve template projects.
-- Publish on public github .
+* [vgonisanz](https://github.com/vgonisanz) (Main Author)
+* [RDCH106](https://github.com/RDCH106)
 
 ## Description
 
@@ -41,10 +41,6 @@ each one in a folder inside build folder
 
 Please check the [contrubution guidelines](https://github.com/vgonisanz/cmake-supporter/blob/master/CONTRIBUTING.md).
 
-##### Authors
-
-* [vgonisanz](https://github.com/vgonisanz) (Main Author)
-* [RDCH106](https://github.com/RDCH106)
 
 ## Git tips:
 
