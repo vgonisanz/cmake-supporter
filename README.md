@@ -38,7 +38,6 @@ each one in a folder inside build folder
 - More info in Templates
 
 ## Contribution guidelines
--
 
 Please check the [contrubution guidelines](https://github.com/vgonisanz/cmake-supporter/blob/master/CONTRIBUTING.md).
 
